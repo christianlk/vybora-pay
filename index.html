@@ -3,58 +3,413 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VYBORA · Recharge du portefeuille</title>
-<!--
-  Static payment page, to host at https://vybora.com/pay/ (Supabase Edge
-  Functions do not serve HTML). The app opens:
-    https://vybora.com/pay/?deposit=<deposit id>&amount=<FCFA>&key=<KKIAPAY public key>&sandbox=1
-  The deposit id is sent to KKIAPAY as partnerId; the server only credits the
-  wallet after checking the transaction with KKIAPAY's API (webhook + app).
--->
-<style>
-  :root { color-scheme: dark; }
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #07080F;
-         color: #F2F4FF; font-family: Inter, system-ui, sans-serif; }
-  main { width: min(420px, 90vw); padding: 32px; border-radius: 24px; background: rgba(20,24,48,.7);
-         border: 1px solid rgba(255,255,255,.1); text-align: center; }
-  h1 { font-size: 22px; margin: 0 0 8px; }
-  p { color: #C9CEE8; line-height: 1.5; }
-  .amount { font-size: 34px; font-weight: 700; margin: 16px 0; }
-  button, a.btn { display: inline-block; width: 100%; box-sizing: border-box; height: 52px; border: 0; border-radius: 16px;
-         background: linear-gradient(135deg,#7C5CFF,#5B8CFF 60%,#22D3EE); color: #07080F; font-size: 15px;
-         font-weight: 600; cursor: pointer; text-decoration: none; line-height: 52px; }
-  .muted { color: #9AA3C7; font-size: 13px; }
-</style>
+<title>VYBORA · Publiez, influencez, encaissez en FCFA</title>
+<meta name="description" content="VYBORA met en relation les créateurs de contenu et les entreprises d'Afrique de l'Ouest. Les créateurs sont payés 200 FCFA pour 1 000 vues validées, par Mobile Money.">
+<meta property="og:title" content="VYBORA · Créez. Influencez. Gagnez.">
+<meta property="og:description" content="Gagnez de l'argent avec vos vues, ou faites connaître votre entreprise grâce aux créateurs.">
+<meta property="og:image" content="assets/icon.png">
+<link rel="icon" href="assets/icon.png">
+<script>
+  // Old app builds open the site root for payments: send them to the payment page.
+  if (new URLSearchParams(location.search).has("deposit")) location.replace("pay/" + location.search);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="assets/logo.png" alt="">VYBORA</a>
+    <nav aria-label="Navigation principale">
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="#simulateur">Simulateur</a>
+      <a href="#application">L'application</a>
+      <a href="#retraits">Retraits</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn js-play" href="#">Télécharger</a>
+  </div>
+</header>
+
 <main>
-  <h1>Recharger mon portefeuille</h1>
-  <div class="amount" id="amount">—</div>
-  <p id="status">Paiement sécurisé par KKIAPAY (Mobile Money, carte).</p>
-  <button id="pay" type="button">Payer maintenant</button>
-  <p class="muted">Votre solde est crédité dès que KKIAPAY confirme le paiement à nos serveurs.</p>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1><span>Créez.</span><span>Influencez.</span><span class="earn">Gagnez.</span></h1>
+        <p class="lead">VYBORA paie les créateurs pour les vues qu'ils apportent aux entreprises. Vous publiez une campagne sur vos réseaux, vos vues sont vérifiées, et vous retirez vos gains par Mobile Money.</p>
+        <div class="ctas">
+          <a class="btn btn-store js-play" href="#">
+            <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+            <span><small>Disponible sur</small>Google Play</span>
+          </a>
+          <a class="btn btn-ghost" href="#fonctionnement" data-audience="business">Je suis une entreprise</a>
+        </div>
+        <div class="facts">
+          <span><b>200 FCFA</b> pour 1 000 vues</span>
+          <span>Retrait dès <b>7 000 FCFA</b></span>
+          <span>Paiement <b>Mobile Money</b></span>
+        </div>
+      </div>
+
+      <div class="orbit-stage" aria-label="Le logo VYBORA entouré des réseaux sociaux pris en charge">
+        <div class="halo"></div>
+        <div class="ring"></div>
+        <div class="logo"><img src="assets/logo.png" alt="Logo VYBORA"></div>
+        <div class="orbit">
+          <div class="orb" style="--a:0deg;--d:.25s"><img src="assets/social/tiktok.png" alt="TikTok"></div>
+          <div class="orb" style="--a:60deg;--d:.35s"><img src="assets/social/facebook.png" alt="Facebook"></div>
+          <div class="orb" style="--a:120deg;--d:.45s"><img src="assets/social/youtube.png" alt="YouTube"></div>
+          <div class="orb" style="--a:180deg;--d:.55s"><img src="assets/social/instagram.png" alt="Instagram"></div>
+          <div class="orb" style="--a:240deg;--d:.65s"><img src="assets/social/whatsapp.png" alt="WhatsApp"></div>
+          <div class="orb" style="--a:300deg;--d:.75s"><img src="assets/social/x.png" alt="X"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" aria-label="Réseaux pris en charge">
+    <div class="track">
+      <span><img src="assets/social/tiktok.png" alt="">TikTok</span>
+      <span><img src="assets/social/facebook.png" alt="">Facebook</span>
+      <span><img src="assets/social/youtube.png" alt="">YouTube</span>
+      <span><img src="assets/social/instagram.png" alt="">Instagram</span>
+      <span><img src="assets/social/whatsapp.png" alt="">Statuts WhatsApp</span>
+      <span><img src="assets/social/x.png" alt="">X</span>
+      <span aria-hidden="true"><img src="assets/social/tiktok.png" alt="">TikTok</span>
+      <span aria-hidden="true"><img src="assets/social/facebook.png" alt="">Facebook</span>
+      <span aria-hidden="true"><img src="assets/social/youtube.png" alt="">YouTube</span>
+      <span aria-hidden="true"><img src="assets/social/instagram.png" alt="">Instagram</span>
+      <span aria-hidden="true"><img src="assets/social/whatsapp.png" alt="">Statuts WhatsApp</span>
+      <span aria-hidden="true"><img src="assets/social/x.png" alt="">X</span>
+    </div>
+  </div>
+
+  <section class="section" id="fonctionnement">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Un seul principe : chaque vue vérifiée est payée.</h2>
+        <p class="lead">Les entreprises financent des campagnes. Les créateurs les diffusent. VYBORA vérifie les résultats et règle tout le monde.</p>
+      </div>
+      <div class="switch" role="tablist" aria-label="Choisir votre profil">
+        <span class="pill" aria-hidden="true"></span>
+        <button role="tab" aria-selected="true" aria-controls="p-creator" id="t-creator">Je suis créateur</button>
+        <button role="tab" aria-selected="false" aria-controls="p-business" id="t-business">Je suis une entreprise</button>
+      </div>
+
+      <div class="panel show" id="p-creator" role="tabpanel" aria-labelledby="t-creator">
+        <ol class="steps">
+          <li><h3>Inscrivez-vous</h3><p>Créez votre compte, ajoutez vos réseaux sociaux et vérifiez votre identité.</p></li>
+          <li><h3>Choisissez une campagne</h3><p>Parcourez les campagnes ouvertes dans votre pays et postulez à celles qui vous ressemblent.</p></li>
+          <li><h3>Publiez et prouvez</h3><p>Diffusez le contenu avec votre lien suivi, puis envoyez vos captures de statistiques.</p></li>
+          <li><h3>Retirez vos gains</h3><p>Vos gains sont disponibles 72 h après validation. Retrait sur MTN ou Moov Money dès 7 000 FCFA.</p></li>
+        </ol>
+      </div>
+      <div class="panel" id="p-business" role="tabpanel" aria-labelledby="t-business" hidden>
+        <ol class="steps">
+          <li><h3>Créez votre campagne</h3><p>Objectif, produit, pays visés, réseaux et nombre de vues souhaité.</p></li>
+          <li><h3>Rechargez et financez</h3><p>Rechargez votre portefeuille par Mobile Money ou carte via KKIAPAY, puis financez la campagne.</p></li>
+          <li><h3>Choisissez vos créateurs</h3><p>Acceptez les candidatures qui correspondent à votre marque.</p></li>
+          <li><h3>Suivez les résultats</h3><p>Vues validées, clics par pays, par réseau et par créateur, au jour le jour.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="simulateur" style="padding-top:0">
+    <div class="wrap">
+      <div class="sim">
+        <div>
+          <h2>Faites le calcul.</h2>
+          <p class="lead">Les tarifs sont fixes et identiques pour tous : 200 FCFA pour 1 000 vues validées côté créateur, 20 % de commission côté plateforme.</p>
+          <div class="tabs switch" role="tablist" aria-label="Type de calcul">
+            <span class="pill" aria-hidden="true"></span>
+            <button role="tab" aria-selected="true" id="c-creator">Mes gains</button>
+            <button role="tab" aria-selected="false" id="c-business">Ma visibilité</button>
+          </div>
+        </div>
+        <div class="calc" aria-live="polite">
+          <div id="calc-creator">
+            <label for="views">Vues validées sur vos publications</label>
+            <output class="input" id="views-out" for="views">50 000 vues</output>
+            <input type="range" id="views" min="1000" max="500000" step="1000" value="50000">
+            <div class="presets" aria-label="Exemples">
+              <button type="button" data-views="10000">10 000</button>
+              <button type="button" data-views="50000">50 000</button>
+              <button type="button" data-views="150000">150 000</button>
+              <button type="button" data-views="500000">500 000</button>
+            </div>
+            <div class="result">
+              <span class="note" style="color:#D9CFEE">Vous gagnez</span>
+              <span class="big" id="earn">10 000 FCFA</span>
+              <p class="detail" id="earn-detail"></p>
+            </div>
+          </div>
+          <div id="calc-business" hidden>
+            <label for="budget">Budget de votre campagne</label>
+            <output class="input" id="budget-out" for="budget">50 000 FCFA</output>
+            <input type="range" id="budget" min="5000" max="2000000" step="5000" value="50000">
+            <div class="presets" aria-label="Exemples">
+              <button type="button" data-budget="10000">10 000</button>
+              <button type="button" data-budget="50000">50 000</button>
+              <button type="button" data-budget="250000">250 000</button>
+              <button type="button" data-budget="1000000">1 000 000</button>
+            </div>
+            <div class="result">
+              <span class="note" style="color:#D9CFEE">Vues garanties à payer aux créateurs</span>
+              <span class="big" id="reach">200 000 vues</span>
+              <p class="detail" id="reach-detail"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="application" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Tout se passe dans l'application.</h2>
+        <p class="lead">Sur Android, iPhone et Windows. Voici les principaux écrans.</p>
+      </div>
+      <div class="gallery reveal">
+        <div class="picker" role="tablist" aria-label="Écrans de l'application">
+          <button role="tab" aria-selected="true" data-i="0"><b>Tableau de bord</b>Vos gains en un coup d'œil</button>
+          <button role="tab" aria-selected="false" data-i="1"><b>Campagnes</b>Les offres ouvertes près de vous</button>
+          <button role="tab" aria-selected="false" data-i="2"><b>Portefeuille</b>Retrait Mobile Money</button>
+          <button role="tab" aria-selected="false" data-i="3"><b>Rapport entreprise</b>Les résultats d'une campagne</button>
+        </div>
+        <div class="phones">
+          <div class="phone" data-pos="0" aria-hidden="false"><div class="screen">
+            <p class="s-muted">Bonjour Aïcha</p>
+            <p class="s-title">Tableau de bord</p>
+            <div class="s-card s-grad"><p style="opacity:.85;font-size:12px">Disponible au retrait</p><p class="s-num">18 400 FCFA</p></div>
+            <div class="s-row" style="gap:10px">
+              <div class="s-card" style="flex:1"><p class="s-muted">En attente</p><p style="font-weight:700;font-size:15px">6 200 FCFA</p></div>
+              <div class="s-card" style="flex:1"><p class="s-muted">Vues validées</p><p style="font-weight:700;font-size:15px">123 000</p></div>
+            </div>
+            <div class="s-card"><div class="s-row"><b>Lancement jus Bissap</b><span class="s-chip ok">Validée</span></div><p class="s-muted">+ 4 800 FCFA · 24 000 vues</p></div>
+            <div class="s-card"><div class="s-row"><b>Fibre maison</b><span class="s-chip wait">En revue</span></div><p class="s-muted">31 000 vues déclarées</p></div>
+            <div class="s-nav"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+          </div></div>
+          <div class="phone" data-pos="1" aria-hidden="true"><div class="screen">
+            <p class="s-title">Campagnes ouvertes</p>
+            <div class="s-card"><div class="s-row"><b>Lancement jus Bissap</b><div class="s-nets"><img src="assets/social/tiktok.png" alt=""><img src="assets/social/instagram.png" alt=""></div></div>
+              <p class="s-muted">Bénin · 200 FCFA / 1 000 vues</p><div class="s-bar"><i style="width:62%"></i></div><p class="s-muted" style="margin-top:6px">7 places restantes</p></div>
+            <div class="s-card"><div class="s-row"><b>Fibre maison</b><div class="s-nets"><img src="assets/social/facebook.png" alt=""><img src="assets/social/whatsapp.png" alt=""></div></div>
+              <p class="s-muted">Bénin, Togo · 200 FCFA / 1 000 vues</p><div class="s-bar"><i style="width:35%"></i></div><p class="s-muted" style="margin-top:6px">12 places restantes</p></div>
+            <div class="s-card"><div class="s-row"><b>Appli de livraison</b><div class="s-nets"><img src="assets/social/youtube.png" alt=""></div></div>
+              <p class="s-muted">Côte d'Ivoire · 200 FCFA / 1 000 vues</p><div class="s-bar"><i style="width:80%"></i></div><p class="s-muted" style="margin-top:6px">3 places restantes</p></div>
+            <div class="s-nav"><i></i><i class="on"></i><i></i><i></i><i></i></div>
+          </div></div>
+          <div class="phone" data-pos="2" aria-hidden="true"><div class="screen">
+            <p class="s-title">Portefeuille</p>
+            <div class="s-card s-grad"><p style="opacity:.85;font-size:12px">Disponible</p><p class="s-num">18 400 FCFA</p></div>
+            <div class="s-card"><p class="s-muted">Montant</p><p style="font-weight:700;font-size:20px">15 000 FCFA</p>
+              <p class="s-muted" style="margin-top:10px">Opérateur</p><p style="font-weight:600">MTN Mobile Money</p>
+              <p class="s-muted" style="margin-top:10px">Numéro</p><p style="font-weight:600">+229 •• •• •• 47</p>
+              <span class="s-btn">Demander le retrait</span></div>
+            <p class="s-muted">Minimum 7 000 FCFA. Envoi après vérification par l'équipe VYBORA.</p>
+            <div class="s-nav"><i></i><i></i><i></i><i class="on"></i><i></i></div>
+          </div></div>
+          <div class="phone" data-pos="-1" aria-hidden="true"><div class="screen">
+            <p class="s-muted">Rapport de campagne</p>
+            <p class="s-title">Lancement jus Bissap</p>
+            <div class="s-row" style="gap:10px">
+              <div class="s-card" style="flex:1"><p class="s-muted">Vues validées</p><p style="font-weight:700;font-size:15px">212 000</p></div>
+              <div class="s-card" style="flex:1"><p class="s-muted">Clics valides</p><p style="font-weight:700;font-size:15px">3 940</p></div>
+            </div>
+            <div class="s-card"><p class="s-muted">Clics des 7 derniers jours</p>
+              <div class="s-chart"><i style="height:30%"></i><i style="height:45%"></i><i style="height:40%"></i><i style="height:65%"></i><i style="height:58%"></i><i style="height:82%"></i><i style="height:100%"></i></div></div>
+            <div class="s-card"><div class="s-row"><span>Bénin</span><b>71 %</b></div><div class="s-row" style="margin-top:6px"><span>Togo</span><b>18 %</b></div><div class="s-row" style="margin-top:6px"><span>Nigeria</span><b>11 %</b></div></div>
+            <div class="s-nav"><i></i><i class="on"></i><i></i><i></i></div>
+          </div></div>
+          <p class="demo-tag">Aperçus de l'application. Noms, campagnes et montants sont des exemples.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="retraits" style="padding-top:0">
+    <div class="wrap payout">
+      <div>
+        <div class="section-head" style="margin-bottom:36px">
+          <h2>Votre argent arrive sur votre Mobile Money.</h2>
+          <p class="lead">Chaque retrait est vérifié par une personne de l'équipe, puis envoyé sur votre numéro. Vous suivez chaque étape dans l'application.</p>
+        </div>
+        <ol class="timeline reveal" id="timeline">
+          <li data-n="1"><h3>Vous demandez le retrait</h3><p>Dès 7 000 FCFA disponibles, depuis votre portefeuille.</p></li>
+          <li data-n="2"><h3>L'équipe vérifie</h3><p>Identité, campagnes et vues : tout est contrôlé pour protéger les créateurs honnêtes.</p></li>
+          <li data-n="3"><h3>Le montant est envoyé</h3><p>Sur votre numéro MTN ou Moov Money.</p></li>
+          <li data-n="4"><h3>Vous êtes notifié</h3><p>Une notification confirme le retrait effectué.</p></li>
+        </ol>
+      </div>
+      <div>
+        <div class="notif" id="notif">
+          <img src="assets/icon.png" alt="">
+          <div>
+            <b>Retrait effectué</b>
+            <p>15 000 FCFA ont été envoyés sur votre numéro MTN Mobile Money.</p>
+            <p class="when">VYBORA · à l'instant</p>
+          </div>
+        </div>
+        <p class="note" style="margin-top:14px">Exemple de la notification reçue dans l'application.</p>
+        <button class="btn btn-ghost" id="replay" type="button" style="margin-top:20px">Revoir les étapes</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0" id="avis">
+    <div class="wrap reviews">
+      <div>
+        <h2>Les avis de nos utilisateurs.</h2>
+        <p class="lead" style="margin-top:16px">VYBORA vient d'ouvrir. Les premiers avis de créateurs et d'entreprises seront publiés ici tels qu'ils nous sont envoyés, avec leur accord.</p>
+        <div class="ctas" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+          <a class="btn" href="mailto:christianlokossou1997@gmail.com?subject=Mon%20avis%20sur%20VYBORA">Donner mon avis</a>
+          <a class="btn btn-ghost js-play" href="#">Essayer l'application</a>
+        </div>
+      </div>
+      <div class="empty-quotes" aria-hidden="true">
+        <div>Le premier avis d'un créateur</div>
+        <div>Le premier résultat d'une entreprise</div>
+        <div>Peut-être le vôtre</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head"><h2>Questions fréquentes</h2></div>
+      <div class="faq">
+        <details><summary>Combien gagne un créateur ?</summary><p>200 FCFA pour 1 000 vues validées. Le tarif est fixé dans chaque campagne au moment où l'entreprise la finance, il ne change pas en cours de route.</p></details>
+        <details><summary>Comment les vues sont-elles vérifiées ?</summary><p>Vous envoyez les captures de statistiques de vos publications. L'équipe les contrôle, détecte les doublons et vérifie les clics de votre lien suivi. Seules les vues validées sont payées.</p></details>
+        <details><summary>Quand puis-je retirer mon argent ?</summary><p>Vos gains deviennent disponibles 72 heures après validation. Vous pouvez demander un retrait dès 7 000 FCFA, envoyé sur MTN ou Moov Money.</p></details>
+        <details><summary>Combien coûte une campagne pour une entreprise ?</summary><p>Vous choisissez votre budget. VYBORA prélève 20 % de commission, le reste rémunère les créateurs. Ce qui n'a pas été dépensé à la fin de la campagne revient sur votre portefeuille.</p></details>
+        <details><summary>Comment recharger mon compte entreprise ?</summary><p>Par Mobile Money ou carte bancaire, via KKIAPAY. Le solde est crédité dès que le paiement est confirmé.</p></details>
+        <details><summary>Pourquoi l'application me demande-t-elle de couper mon VPN ?</summary><p>Pour que les statistiques des campagnes restent fiables, nous vérifions le pays de connexion. Un VPN fausse cette information.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap final">
+      <img src="assets/logo.png" alt="">
+      <h2>Vos vues valent de l'argent. Commencez aujourd'hui.</h2>
+      <a class="btn btn-store js-play" href="#">
+        <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+        <span><small>Télécharger sur</small>Google Play</span>
+      </a>
+    </div>
+  </section>
 </main>
-<script src="https://cdn.kkiapay.me/k.js"></script>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> VYBORA</span>
+    <span><a href="confidentialite.html">Politique de confidentialité</a><a href="mailto:christianlokossou1997@gmail.com">Contact</a></span>
+  </div>
+</footer>
+
 <script>
-  const q = new URLSearchParams(location.search);
-  const deposit = q.get("deposit") || "";
-  const amount = parseInt(q.get("amount") || "0", 10);
-  const key = q.get("key") || "";
-  const sandbox = q.get("sandbox") === "1";
-  const statusEl = document.getElementById("status");
-  const valid = /^[0-9a-f-]{36}$/i.test(deposit) && amount > 0 && key;
-  document.getElementById("amount").textContent =
-    valid ? amount.toLocaleString("fr-FR") + " FCFA" : "Lien invalide";
-  const payBtn = document.getElementById("pay");
-  payBtn.disabled = !valid;
-  payBtn.addEventListener("click", () => {
-    openKkiapayWidget({ amount, key, sandbox, partnerId: deposit, position: "center", theme: "#7C5CFF" });
+// Google Play listing (works once the app is published under this id).
+const PLAY_URL = "https://play.google.com/store/apps/details?id=com.vybora.app";
+document.querySelectorAll(".js-play").forEach(a => { a.href = PLAY_URL; a.target = "_blank"; a.rel = "noopener"; });
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// Header border once scrolled.
+const header = document.getElementById("top");
+addEventListener("scroll", () => header.classList.toggle("scrolled", scrollY > 8), { passive: true });
+
+// Ripple on every button press.
+document.addEventListener("pointerdown", e => {
+  const b = e.target.closest(".btn"); if (!b) return;
+  const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height);
+  const dot = document.createElement("span"); dot.className = "ripple";
+  dot.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+  b.appendChild(dot); setTimeout(() => dot.remove(), 650);
+});
+
+// Segmented switches with a sliding pill.
+function segmented(root, onChange) {
+  const pill = root.querySelector(".pill"), tabs = [...root.querySelectorAll("[role=tab]")];
+  const place = t => { pill.style.width = t.offsetWidth + "px"; pill.style.transform = `translateX(${t.offsetLeft - 6}px)`; };
+  const select = t => { tabs.forEach(x => x.setAttribute("aria-selected", x === t)); place(t); onChange(tabs.indexOf(t)); };
+  tabs.forEach(t => t.addEventListener("click", () => select(t)));
+  root.addEventListener("keydown", e => {
+    const i = tabs.findIndex(t => t.getAttribute("aria-selected") === "true");
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") { const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); select(n); }
   });
-  addSuccessListener((response) => {
-    const tx = encodeURIComponent(response.transactionId || "");
-    statusEl.textContent = "Paiement reçu. Vous pouvez revenir dans l'application VYBORA.";
-    payBtn.outerHTML = '<a class="btn" href="vybora://payment?deposit=' + deposit + '&transaction=' + tx + '">Revenir dans VYBORA</a>';
-  });
+  requestAnimationFrame(() => place(tabs.find(t => t.getAttribute("aria-selected") === "true")));
+  addEventListener("resize", () => place(tabs.find(t => t.getAttribute("aria-selected") === "true")));
+  return select;
+}
+const panels = [document.getElementById("p-creator"), document.getElementById("p-business")];
+const audienceSwitch = document.querySelector("#fonctionnement .switch");
+const selectAudience = segmented(audienceSwitch, i => panels.forEach((p, k) => {
+  p.hidden = k !== i; p.classList.remove("show"); if (k === i) requestAnimationFrame(() => p.classList.add("show"));
+}));
+document.querySelectorAll("[data-audience=business]").forEach(a => a.addEventListener("click", () => selectAudience(audienceSwitch.querySelectorAll("[role=tab]")[1])));
+
+// Simulator.
+const fmt = n => Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ");
+function tween(el, to, suffix) {
+  const from = +(el.dataset.v || to), t0 = performance.now(); el.dataset.v = to;
+  const step = t => { const k = Math.min(1, (t - t0) / 420), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(from + (to - from) * e) + suffix; if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+const views = document.getElementById("views"), budget = document.getElementById("budget");
+function updateCreator() {
+  const v = +views.value, gain = v / 1000 * 200;
+  document.getElementById("views-out").textContent = fmt(v) + " vues";
+  tween(document.getElementById("earn"), gain, " FCFA");
+  const left = Math.max(0, 7000 - gain);
+  document.getElementById("earn-detail").innerHTML = left > 0
+    ? `Encore <b>${fmt(left)} FCFA</b> et vous atteignez le seuil de retrait de 7 000 FCFA.`
+    : `Soit <b>${Math.floor(gain / 7000)} retrait${gain >= 14000 ? "s" : ""}</b> minimum possible${gain >= 14000 ? "s" : ""} sur votre Mobile Money.`;
+}
+function updateBusiness() {
+  const b = +budget.value, creators = b * 0.8, reach = creators / 200 * 1000;
+  document.getElementById("budget-out").textContent = fmt(b) + " FCFA";
+  tween(document.getElementById("reach"), reach, " vues");
+  document.getElementById("reach-detail").innerHTML = `<b>${fmt(creators)} FCFA</b> vont aux créateurs, <b>${fmt(b - creators)} FCFA</b> de commission VYBORA. Vous ne payez que les vues validées.`;
+}
+views.addEventListener("input", updateCreator); budget.addEventListener("input", updateBusiness);
+document.querySelectorAll("[data-views]").forEach(b => b.addEventListener("click", () => { views.value = b.dataset.views; updateCreator(); }));
+document.querySelectorAll("[data-budget]").forEach(b => b.addEventListener("click", () => { budget.value = b.dataset.budget; updateBusiness(); }));
+updateCreator(); updateBusiness();
+segmented(document.querySelector(".sim .switch"), i => {
+  document.getElementById("calc-creator").hidden = i !== 0; document.getElementById("calc-business").hidden = i !== 1;
+});
+
+// App screens carousel.
+const phones = [...document.querySelectorAll(".phone")], picks = [...document.querySelectorAll(".picker button")];
+let current = 0, auto;
+function show(i) {
+  current = (i + phones.length) % phones.length;
+  phones.forEach((p, k) => { let d = k - current; if (d > 2) d -= 4; if (d < -1) d += 4; p.dataset.pos = d; p.setAttribute("aria-hidden", d !== 0); });
+  picks.forEach((b, k) => b.setAttribute("aria-selected", k === current));
+}
+picks.forEach((b, k) => b.addEventListener("click", () => { show(k); clearInterval(auto); }));
+phones.forEach((p, k) => p.addEventListener("click", () => { show(k); clearInterval(auto); }));
+show(0);
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) auto = setInterval(() => show(current + 1), 4200);
+
+// Reveal + withdrawal steps, played when visible.
+const steps = [...document.querySelectorAll("#timeline li")], notif = document.getElementById("notif");
+function playSteps() {
+  steps.forEach(s => s.classList.remove("done")); notif.style.opacity = 0;
+  steps.forEach((s, i) => setTimeout(() => s.classList.add("done"), 350 + i * 550));
+  setTimeout(() => { notif.style.opacity = 1; notif.classList.remove("pop"); void notif.offsetWidth; notif.classList.add("pop"); }, 350 + steps.length * 550);
+}
+document.getElementById("replay").addEventListener("click", playSteps);
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; e.target.classList.add("in"); io.unobserve(e.target);
+  if (e.target.id === "timeline") playSteps();
+}), { threshold: .3 });
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 </script>
 </body>
 </html>
