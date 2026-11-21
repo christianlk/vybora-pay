@@ -285,3 +285,6 @@ footer a:hover { color: var(--violet); }
 .top:not(.scrolled) nav a:hover { color: #fff; }
 .hero .facts { color: #CFC4EA; }
 .hero .facts b { color: #fff; }
+.dl-proof { color: #CFC4EA; font-size: 14px; }
+.dl-proof summary { cursor: pointer; color: #fff; font-weight: 600; }
+.dl-proof code { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.08); color: #fff; font-size: 12px; line-height: 1.6; word-break: break-all; }
